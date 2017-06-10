@@ -1,0 +1,15 @@
+/* 
+ * This class will be used to break down the pcap files obtained from wireshark 
+ * into formats readable by our machine learning algorithms.
+ */
+
+import net.sf.*;
+import org.jnetpcap.*;
+
+public class DataHandler {
+	String FileAddress = "";
+	
+	public (String FileAddress) {
+	      this.FileAddress = FileAddress;
+	    }
+}

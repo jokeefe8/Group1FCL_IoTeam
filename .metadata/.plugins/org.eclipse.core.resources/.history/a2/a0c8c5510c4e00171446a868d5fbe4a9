@@ -1,0 +1,73 @@
+/* 
+ * This class will be used to break down the pcap files obtained from wireshark 
+ * into formats readable by our machine learning algorithms.
+ */
+
+import net.sf.*;
+import org.jnetpcap.*;
+import org.jnetpcap.packet.*;
+import org.jnetpcap.util.PcapPacketArrayList;
+
+public class PCapHandler {
+	String FileAddress = "";
+	
+	public PCapHandler(String FileAddress) {
+		this.FileAddress = FileAddress;
+	}
+	
+	/**
+	 * Opens the offline Pcap-formatted file. 
+	 * 
+	 * @return PcapPacketArrayList  List of packets in the file
+	 * @throws ExceptionReadingPcapFiles Facing any erro in opening the file
+	 */
+	
+	public PcapPacketArrayList readOfflineFiles() throws ExceptionReadingPcapFiles {
+	41      //First, setup error buffer and name for our file
+	42      final StringBuilder errbuf = new StringBuilder(); // For any error msgs  
+	43      
+	44      //Second ,open up the selected file using openOffline call
+	45      Pcap pcap = Pcap.openOffline(FileAddress, errbuf);
+	46      
+	47      //Throw exception if it cannot open the file
+	48      if (pcap == null) {  
+	49              throw new ExceptionReadingPcapFiles(errbuf.toString()); 
+	50          }
+	51      
+	52      //Next, we create a packet handler which will receive packets from the libpcap loop.
+	53      PcapPacketHandler<PcapPacketArrayList> jpacketHandler = new PcapPacketHandler<PcapPacketArrayList>() {  
+	54          
+	55              public void nextPacket(PcapPacket packet, PcapPacketArrayList PaketsList) {  
+	56    
+	57                  PaketsList.add(packet);
+	58              }  
+	59          };
+	60          
+	61          /*************************************************************************** 
+	62           * (From jNetPcap comments:)
+	63           * Fourth we enter the loop and tell it to capture unlimited packets. The loop 
+	64           * method does a mapping of pcap.datalink() DLT value to JProtocol ID, which 
+	65           * is needed by JScanner. The scanner scans the packet buffer and decodes 
+	66           * the headers. The mapping is done automatically, although a variation on 
+	67           * the loop method exists that allows the programmer to specify exactly 
+	68           * which protocol ID to use as the data link type for this pcap interface. 
+	69           **************************************************************************/ 
+	70          
+	71          try {  
+	72            PcapPacketArrayList packets = new PcapPacketArrayList();
+	73            pcap.loop(-1,jpacketHandler,packets);
+	74            
+	75            return packets;
+	76          } finally {  
+	77             //Last thing to do is close the pcap handle 
+	78             pcap.close();  
+	79          } 
+	80          
+	81          
+	82          
+	83    }
+	84    
+	85    
+	86  
+	87  }
+}
