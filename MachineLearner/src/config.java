@@ -1,3 +1,3 @@
 public class Config {
-  public static final config_file = "sample_data.pcapng";
+  public static final string config_file = "sample_data.pcapng";
 }
