@@ -42,12 +42,7 @@ public class PCapHandler {
 		};
 		
 		/*************************************************************************** 
-		 * Fourth we enter the loop and tell it to capture unlimited packets. The loop 
-		 * method does a mapping of pcap.datalink() DLT value to JProtocol ID, which 
-		 * is needed by JScanner. The scanner scans the packet buffer and decodes 
-		 * the headers. The mapping is done automatically, although a variation on 
-		 * the loop method exists that allows the programmer to specify exactly 
-		 * which protocol ID to use as the data link type for this pcap interface. 
+		 * Fourth we enter the loop and tell it to capture unlimited packets.  
 		 **************************************************************************/ 
 		
 		try {  
