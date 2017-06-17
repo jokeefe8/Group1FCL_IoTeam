@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IoTeam_App", "IoTeam_App\IoTeam_App.csproj", "{2DAB7019-5AEC-472A-9AFF-03E9881B15CB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IoTeam_Application", "IoTeam_App\IoTeam_Application.csproj", "{2DAB7019-5AEC-472A-9AFF-03E9881B15CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
