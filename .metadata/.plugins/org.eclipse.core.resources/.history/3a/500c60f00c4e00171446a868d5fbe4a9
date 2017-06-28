@@ -1,5 +1,0 @@
-public class mcl {
-	public static void main(String [] args) {
-		PCapHandler pcap = new PCapHandler("sample_data.pcapng");
-	}
-}

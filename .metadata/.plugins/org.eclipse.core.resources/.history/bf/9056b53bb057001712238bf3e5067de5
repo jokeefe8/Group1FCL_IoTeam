@@ -1,0 +1,25 @@
+import java.util.ArrayList;
+
+public class Parser {
+	public ArrayList<Packet> PacketList;
+	
+	
+	
+	public class Packet {
+		public String time;
+		public String src;
+		public String dst;
+		public String protocol;
+		public String length;
+		public String info;
+		
+		public Packet(String t, String s, String d, String p, String l, String i) {
+			time = t;
+			src = s;
+			dst = d;
+			protocol = p;
+			length = l;
+			info = i;
+		}
+	}
+}
