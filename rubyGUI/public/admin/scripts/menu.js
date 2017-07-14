@@ -19,8 +19,8 @@ $(document).ready(function() {
 
     // clear all the input fields in the modal upon closing
     $(":input[name='name']").val("")
-    $(":input[name='price']").val("")
-    $("#descriptionText").val("")
+    $(":input[name='hardware']").val("")
+    $(":input[name='transfer']").val("")
   });
 
   // cancel creating/editing via the modal
@@ -29,8 +29,8 @@ $(document).ready(function() {
 
     // clear all the input fields in the modal upon closing
     $(":input[name='name']").val("")
-    $(":input[name='price']").val("")
-    $("#descriptionText").val("")
+    $(":input[name='hardware']").val("")
+    $(":input[name='transfer']").val("")
   });
 
   // submit changes from the modal
@@ -40,23 +40,23 @@ $(document).ready(function() {
 
     // get input from modal fields
     var name = $(":input[name='name']").val()
-    var price = $(":input[name='price']").val()
-    var description = $("#descriptionText").val()
+    var hardware = $(":input[name='hardware']").val()
+    var transfer = $(":input[name='transfer']").val()
 
     // clear the input fields no matter what
     $(":input[name='name']").val("")
-    $(":input[name='price']").val("")
-    $("#descriptionText").val("")
+    $(":input[name='hardware']").val("")
+    $(":input[name='transfer']").val("")
 
     if (mode == "create") {
       menu_id = $("table").attr("id")
 
       // build the object
       new_menu_item = {
-	menu: glob_menu_id,
+	      pcap: glob_menu_id,
         name: name,
-        price: price,
-        description: description
+        hardware: hardware,
+        transfer: transfer
       }
 
       // *PUT* it to the back end
@@ -78,18 +78,6 @@ $(document).ready(function() {
           return
         }
       });
-
-      // add the new menu item to the local menu item array
-//      menu_items_all.push(new_menu_item);
-
-      // and add the corresponding new row to the table
-      /*
-      curr_table.row.add({
-          "name": name,
-          "price": price,
-          "description": description
-      }).draw(false);
-      */
 
       // rebind the events (since the table was redrawn)
     } else if (mode == "edit") {
@@ -121,10 +109,10 @@ $(document).ready(function() {
       // ... create a proposed, altered menu item ...
       proposed_menu_item = {
         id: menu_items_all[idx].id,
-        menu: glob_menu_id,
+        pcap: glob_menu_id,
         name: name,
-        price: price,
-        description: description
+        hardware: hardware,
+        transfer: transfer
       }
 
       // *POST* the changed menu to the back end
@@ -137,8 +125,8 @@ $(document).ready(function() {
         success: function(data) {
           // update the local copy
           menu_items_all[idx].name = name
-          menu_items_all[idx].price = price
-          menu_items_all[idx].description = description
+          menu_items_all[idx].hardware = hardware
+          menu_items_all[idx].transfer = transfer
 
           // update the corresponding row in the table
           curr_table.row(curr_td).data(menu_items_all[idx]).draw(false);
@@ -166,7 +154,7 @@ $(document).ready(function() {
       build_dropdown(data)
     },
     error: function(data) {
-      menus = data
+      pcaps = data
       console.log("error\nreceived back:")
       console.log(data)
     }
@@ -191,34 +179,33 @@ var table_template =
       "   <tr>\n" +
       "     <th>Delete</th>\n" +
       "     <th>Edit</th>\n" +
-      "     <th>Item</th>\n" +
-      "     <th>Price</th>\n" +
-      "     <th>Description</th>\n" +
+      "     <th>Device</th>\n" +
+      "     <th>Hardware Address</th>\n" +
+      "     <th>Transfer Protocol</th>\n" +
       "   </tr>\n" +
       " </thead>\n" +
       " <tfoot>\n" +
       "   <tr>\n" +
       "     <th>Delete</th>\n" +
       "     <th>Edit</th>\n" +
-      "     <th>Item</th>\n" +
-      "     <th>Price</th>\n" +
-      "     <th>Description</th>\n" +
+      "     <th>Device</th>\n" +
+      "     <th>Hardware Address</th>\n" +
+      "     <th>Transfer Protocol</th>\n" +
       "   </tr>\n" +
       " </tfoot>\n" +
       "</table>\n"
 
 function build_dropdown(data) {
   // save the data to global
-  menus = data.menu;
+  pcaps = data.pcap;
 
   // populate the select menu
-  $("#selectMenus").append("<optgroup label='Menus' id='optgroupMenus'></optgroup>")
-  for (i in menus) {
-    menu = menus[i]
-    if (menu) {
-      $("#optgroupMenus").append("<option value='" + menu.id + "'>" +
-                                    menu.name +
-                                  "</option>")
+  $("#selectMenus").append("<optgroup label='Pcaps' id='optgroupMenus'></optgroup>")
+  for (i in pcaps) {
+    pcap = pcaps[i]
+    if (pcap) {
+      $("#optgroupMenus").append("<option value='" + pcap.id + "'>" +
+                                    pcap.name + "</option>")
     }
   }
 
@@ -241,7 +228,7 @@ function build_dropdown(data) {
 function build_table(id, name, data) {
 menu_items_all = data;
   $("#menusDiv").html(table_template.replace(/_menu_id_/g, id.toString()).
-                                     replace(/_menu_name_/g, menu.name))
+                                     replace(/_menu_name_/g, pcap.name))
 
   // add a table for it
   curr_table = $("#menusTable" + id.toString()).DataTable({
@@ -249,7 +236,7 @@ menu_items_all = data;
     dom: 'Bfrtip',
     buttons: [
       {
-        text: 'New Menu Item',
+        text: 'New PCAP Grouping',
         action: function () {
           mode = "create"
           draw_modal()
@@ -266,8 +253,8 @@ menu_items_all = data;
         "defaultContent": edit_button
       },
       {"data": "name"},
-      {"data": "price"},
-      {"data": "description"},
+      {"data": "hardware"},
+      {"data": "transfer"},
     ]
   });
 
@@ -333,8 +320,8 @@ function bind_edit() {
 
     // populate modal with data from row
     $(":input[name='name']").val(data.name)
-    $(":input[name='price']").val(data.price)
-    $("#descriptionText").val(data.description)
+    $(":input[name='hardware']").val(data.hardware)
+    $(":input[name='transfer']").val(data.transfer)
 
     // open modal
     mode = "edit"

@@ -9,56 +9,36 @@ $(document).ready(function() {
 
   $.get("/api/collate_menus", function(data) {
     var src = $(".menu-tmpl").html();
+    console.log(src);
     var tmpl = Handlebars.compile(src);
     $("#menus").append(tmpl(data));
   });
 
-
-  /*
-  $.ajax({
-    type: "GET",
-    dataType: "json",
-    url: "http://" + host + "/rest/menus",
-    success: function(data) {
-      menus = data
-
-    },
-    error: function(data) {
-      menus = data
-      console.log("received back:")
-      console.log(data)
-    }
-  });
-  */
 });
 
 function fadein() {
-  // $("#contentContainer").removeClass("fadeout");
   $("#contentContainer").addClass("fadein");
 }
 
-/* ********************************** */
-/*          CONTENT DISPLAY           */
-/* ********************************** */
-
 // menu templates
 var template_menu_section_start =
-                          '<div class="menu-section" id="_menu_id_">' +
-                          ' <h2 class="menu-section-title" id="_menu_name_">' +
-                          '   _menu_name_' +
-                          ' </h2>'
-var template_menu_section_end = '</div>'
+                '<div class="menu-section" id="_menu_id_">' +
+                '<h2 class="menu-section-title" id="_menu_name_">' +
+                '   _menu_name_' +
+                ' </h2>'
+var template_menu_section_end =
+                '</div>'
 var template_menu_item =
                 '<!-- Item starts -->\n' +
                 '<div class="menu-item" id="_item_id_">\n' +
-                '\t<div class="menu-item-name">\n' +
-                '\t\t_item_name_\n' +
+                '\t<div class="pcap-name">\n' +
+                '\t\t_pcap_name_\n' +
                 '\t</div>\n' +
-                '\t<div class="menu-item-price">\n' +
-                '\t\t_item_price_\n' +
+                '\t<div class="pcap-hardware">\n' +
+                '\t\t_pcap_hardware_\n' +
                 '\t</div>\n' +
-                '\t<div class="menu-item-description">\n' +
-                '\t\t_item_description_\n' +
+                '\t<div class="pcap-transfer">\n' +
+                '\t\t_pcap_transfer_\n' +
                 '\t</div>\n' +
                 '</div>\n' +
                 '<!-- Item ends -->\n'
@@ -103,8 +83,8 @@ function build_menu_section_item(menu_name, menu_item) {
 
   return template_menu_item.replace(/_item_id_/g, menu_item.id).
                             replace(/_item_name_/g, menu_item.name).
-                            replace(/_item_price_/g, menu_item.price).
-                            replace(/_item_description_/g, menu_item.description);
+                            replace(/_item_price_/g, menu_item.hardware).
+                            replace(/_item_description_/g, menu_item.transfer);
 }
 
 // build end of menu section html

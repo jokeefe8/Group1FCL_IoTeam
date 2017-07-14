@@ -13,32 +13,32 @@ module Menu
 	def create_menu(name)
 		escape([name])
 		if authorize(@session_id) != -1 then
-			@db.prepare("INSERT INTO Menus (Name) VALUES(?)").execute([name])
+			@db.prepare("INSERT INTO PCAPs (Name) VALUES(?)").execute([name])
 		end
 	end
 
 	def read_menu()
-		menus = []
+		pcaps = []
 
-		@db.execute "SELECT RowID, Name FROM Menus" do |menu|
-			id, name = menu[0], menu[1]
-			menus << { :id => id, :name => name }
+		@db.execute "SELECT RowID, Name FROM PCAPs" do |pcap|
+			id, name = pcap[0], pcap[1]
+			pcaps << { :id => id, :name => name }
 		end
 
-		return menus
+		return pcaps
 	end
 
 	def update_menu(id, name)
 		escape([id, name])
 		if authorize(@session_id) != -1 then
-			@db.prepare("UPDATE Menus SET Name = ? WHERE RowID = ?").execute([name,id])
+			@db.prepare("UPDATE PCAPs SET Name = ? WHERE RowID = ?").execute([name,id])
 		end
 	end
 
 	def delete_menu(id)
 		escape([id])
 		if authorize(@session_id) != -1 then
-			@db.prepare("DELETE FROM Menus WHERE RowID = ?").execute([id])
+			@db.prepare("DELETE FROM PCAPs WHERE RowID = ?").execute([id])
 		end
 	end
 end
@@ -52,34 +52,35 @@ module Item
 			i.sub! "\"", "&quot"
 		end
 	end
-	def create_item(menu, name, price, description)
-		escape([name,description])
+
+	def create_item(pcap, name, hardware, transfer)
+		#escape([name,hardware,transfer])
 		if authorize(@session_id) != -1 then
-			@db.prepare("INSERT INTO Items (Menu, Name, Price, Description) VALUES(?, ?, ?, ?)").execute([menu,name,price,description])
+			@db.prepare("INSERT INTO Devices (PCAP, DeviceName, HardwareAddr, TransferProtocol) VALUES(?, ?, ?, ?)").execute([pcap,name,hardware,transfer])
 		end
 	end
 
 	def read_item()
-		items = []
+		devices = []
 
-		@db.execute "SELECT RowID, Menu, Name, Price, Description FROM Items" do |item|
-			id, menu, name, price, description = item[0], item[1], item[2], item[3], item[4]
-			items << { :id => id, :menu => menu, :name => name, :price => price, :description => description }
+		@db.execute "SELECT RowID, PCAP, DeviceName, HardwareAddr, TransferProtocol FROM Devices" do |device|
+			id, pcap, name, hard_addr, tp = device[0], device[1], device[2], device[3], device[4]
+			devices << { :id => id, :pcap => pcap, :name => name, :ha => hard_addr, :tp => tp }
 		end
 
-		return items
+		return devices
 	end
 
-	def update_item(id, menu, name, price, description)
-		escape([name,description])
+	def update_item(id, pcap, name, hardware, transfer)
+		escape([name,hardware,transfer])
 		if authorize(@session_id) != -1 then
-			@db.prepare("UPDATE Items SET Menu = ?, Name = ?, Price = ?, Description = ? WHERE RowID = ?").execute([menu,name,price,description,id])
+			@db.prepare("UPDATE Items SET PCAP = ?, DeviceName = ?, HardwareAddr = ?, TransferProtocol = ? WHERE RowID = ?").execute([pcap,name,hardware,transfer,id])
 		end
 	end
 
 	def delete_item(id)
 		if authorize(@session_id) != -1 then
-			@db.prepare("DELETE FROM Items WHERE RowID = ?").execute([id])
+			@db.prepare("DELETE FROM Devices WHERE RowID = ?").execute([id])
 		end
 	end
 end
@@ -272,19 +273,19 @@ end
 
 module Util
 	def collate_menus()
-		menus = []
-		result = { :menus => menus }
+		pcaps = []
+		result = { :pcaps => pcaps }
 		id_to_name = {}
 
-		read_menu.each do |menu|
-			id, name = menu[:id], menu[:name]
+		read_menu.each do |pcap|
+			id, name = pcap[:id], pcap[:name]
 			id_to_name[id] = name
-			menus << { :name => name, :items => [] }
+			pcaps << { :name => name, :devices => [] }
 		end
 
-		read_item.each do |item|
-			menu, name, price, description = item[:menu], item[:name], item[:price], item[:description]
-			(menus.find { |m| m[:name] == id_to_name[menu] })[:items] << { :name => name, :price => price, :description => description }
+		read_item.each do |device|
+			pcap, name, hardware, device = item[:pcap], item[:name], item[:hardware], item[:transfer]
+			(pcaps.find { |m| m[:name] == id_to_name[device] })[:pcaps] << { :name => name, :hardware => hardware, :transfer => transfer }
 		end
 
 		return result

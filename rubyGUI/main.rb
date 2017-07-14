@@ -83,6 +83,48 @@ before "/api/*" do
 	content_type :json
 end
 
+get "/api/item" do
+        { :item => @controller.read_item.select { |i| i[:menu].to_s == params["pcap"] }}.to_json
+end
+
+post "/api/item" do
+        @controller.update_item(params["id"], params["pcap"], params["name"], params["hardware"], params["transfer"])
+        @success
+end
+
+put "/api/item" do
+        @controller.create_item(params["pcap"], params["name"], params["hardware"], params["transfer"])
+        @success
+end
+
+delete "/api/item" do
+        @controller.delete_item(params["id"])
+        @success
+end
+
+put "/api/menu" do
+        @controller.create_menu(params["name"])
+        @success
+end
+
+get "/api/menu" do
+        { :menu => @controller.read_menu }.to_json
+end
+
+post "/api/menu" do
+        @controller.update_menu(params["id"], params["name"])
+        @success
+end
+
+delete "/api/menu" do
+        @controller.delete_menu(params["id"])
+        @success
+end
+
+get "/api/collate_menus" do
+        @controller.collate_menus.to_json
+end
+
 put "/api/user" do
 	@controller.create_user(params["name"], params["password"], params["admin"], params["salary"])
 	@success
